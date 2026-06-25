@@ -23,7 +23,7 @@ user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML
 ai:
   enabled: false
   provider: "deepseek" # Supported: "gemini", "groq"
-  api_key: "sk-test"
+  api_key: "sk-6e21db45bf2c4b3ba9cdb8f3d217d3df"
   model: "deepseek-chat"
   # --- Other Provider Examples ---
   # provider: "groq"

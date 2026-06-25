@@ -117,9 +117,9 @@ def run_lazyhunter(domain, scan_type, speed, cookie=None):
         sys.exit(1)
         
     scan_choice = "1"
-    if scan_type == "-dks":
+    if scan_type == "dks":
         scan_choice = "2"
-    elif scan_type == "-dps":
+    elif scan_type == "dps":
         scan_choice = "3"
 
     cmd = ["python", "lazyhunter.py"]
@@ -333,8 +333,8 @@ def run_claude_bug_bounty(target, cookie, deepseek_key):
 def main():
     parser = argparse.ArgumentParser(description="Run LazyHunter and pipe results to DursGo, XSS Scanner, ds_store_exp, and Claude Bug Bounty")
     parser.add_argument("-t", "--target", help="Target domain (e.g., example.com)")
-    parser.add_argument("--scan-type", default="-lts", choices=["-lts", "-dks", "-dps"], 
-                        help="LazyHunter scan type: -lts (Light), -dks (Dark), -dps (Deep). Default is -lts.")
+    parser.add_argument("--scan-type", default="lts", choices=["lts", "dks", "dps"], 
+                        help="LazyHunter scan type: lts (Light), dks (Dark), dps (Deep). Default is lts.")
     parser.add_argument("--speed", default="fast", choices=["low", "standard", "fast"],
                         help="LazyHunter scan speed. Default is fast.")
     parser.add_argument("--cookie", help="Cookie to use for tools authentication")
