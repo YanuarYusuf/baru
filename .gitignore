@@ -1,0 +1,16 @@
+cloned_repos/
+__pycache__/
+*.pyc
+.env
+dursgo-main/dursgo
+dursgo-main/dursgo.exe
+dursgo-main/reports/
+lazyhunter-main/reports/
+lazyhunter-main/take_over/
+lazyhunter-main/crawled_filtered/
+lazyhunter-main/dorking/
+lazyhunter-main/subdomain/
+lazyhunter-main/active/
+lazyhunter-main/nuclei/
+lazyhunter-main/crawled/
+lazyhunter-main/sensitive_data/

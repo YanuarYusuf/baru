@@ -25,15 +25,13 @@ def update_repo(repo_dir, remote_url, branch="main"):
             subprocess.run(["git", "remote", "add", "origin", remote_url], cwd=repo_path, check=True)
             subprocess.run(["git", "fetch", "--all"], cwd=repo_path, check=True)
             subprocess.run(["git", "checkout", "-f", f"origin/{branch}"], cwd=repo_path, check=True)
-            subprocess.run(["git", "branch", "-M", branch], cwd=repo_path, check=True)
-            subprocess.run(["git", "branch", f"--set-upstream-to=origin/{branch}", branch], cwd=repo_path, check=True)
         except subprocess.CalledProcessError as e:
             print(f"[!] Failed to pull latest for {repo_path}: {e}")
             return
     else:
         try:
             subprocess.run(["git", "reset", "--hard", "HEAD"], cwd=repo_path, check=True)
-            subprocess.run(["git", "pull"], cwd=repo_path, check=True)
+            subprocess.run(["git", "pull", "origin", branch], cwd=repo_path, check=True)
         except subprocess.CalledProcessError as e:
             print(f"[!] Failed to pull latest for {repo_path}: {e}")
 
@@ -47,23 +45,23 @@ def update_all_tools():
     update_repo("dursgo-main", "https://github.com/YanuarYusuf/DursGo.git")
     
     # xsscanner
-    xsscanner_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cloned_repos", "xsscanner")
+    xsscanner_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "xsscanner")
     update_repo(xsscanner_dir, "https://github.com/YanuarYusuf/xsscanner.git")
     
     # claude-bug-bounty
-    cbb_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cloned_repos", "claude-bug-bounty")
+    cbb_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "claude-bug-bounty")
     update_repo(cbb_dir, "https://github.com/shuvonsec/claude-bug-bounty.git")
     
     # ds_store_exp
-    ds_store_exp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cloned_repos", "ds_store_exp")
-    update_repo(ds_store_exp_dir, "https://github.com/YanuarYusuf/ds_store_exp.git")
+    ds_store_exp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "ds_store_exp")
+    update_repo(ds_store_exp_dir, "https://github.com/YanuarYusuf/ds_store_exp.git", branch="master")
     
     # BackupFinder
-    backupfinder_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cloned_repos", "BackupFinder")
+    backupfinder_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "BackupFinder")
     update_repo(backupfinder_dir, "https://github.com/YanuarYusuf/BackupFinder.git")
     
     # nuclei-templates
-    nuclei_tpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cloned_repos", "nuclei-templates")
+    nuclei_tpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "nuclei-templates")
     update_repo(nuclei_tpl_dir, "https://github.com/projectdiscovery/nuclei-templates.git")
     
     print("\n[*] All tools and templates updated successfully! Exiting.")
@@ -118,16 +116,41 @@ def run_lazyhunter(domain, scan_type, speed, cookie=None):
         print("[!] Error: lazyhunter.py not found in lazyhunter-main/")
         sys.exit(1)
         
-    cmd = ["python", "lazyhunter.py", scan_type, "-t", domain, "-s", speed]
+    scan_choice = "1"
+    if scan_type == "-dks":
+        scan_choice = "2"
+    elif scan_type == "-dps":
+        scan_choice = "3"
+
+    cmd = ["python", "lazyhunter.py"]
     
     env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
     if cookie:
         env["LAZYHUNTER_COOKIE"] = cookie
 
     try:
-        subprocess.run(cmd, cwd="lazyhunter-main", env=env, check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"[!] LazyHunter encountered an error: {e}")
+        speed_choice = "2"
+        if speed == "low":
+            speed_choice = "1"
+        elif speed == "fast":
+            speed_choice = "3"
+            
+        input_data = f"{scan_choice}\n{domain}\n{speed_choice}\n99\n"
+        process = subprocess.Popen(
+            cmd, 
+            cwd="lazyhunter-main", 
+            env=env, 
+            stdin=subprocess.PIPE,
+            text=True,
+            encoding='utf-8',
+            errors='replace'
+        )
+        process.communicate(input=input_data)
+        if process.returncode != 0:
+            print(f"[!] LazyHunter encountered an error. Return code {process.returncode}")
+    except Exception as e:
+        print(f"[!] LazyHunter encountered an exception: {e}")
 
 def run_dursgo(subdomains):
     print(f"[*] Found {len(subdomains)} active subdomains. Running DursGo on each...")
@@ -165,7 +188,7 @@ def run_dursgo(subdomains):
 
 def run_xsscanner(subdomains, cookie, gemini_api_key):
     print(f"\n[*] Running XSS Scanner on {len(subdomains)} active subdomains...")
-    xsscanner_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cloned_repos", "xsscanner"))
+    xsscanner_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "xsscanner"))
     
     if not os.path.exists(os.path.join(xsscanner_dir, "cli.py")):
         print(f"[!] Warning: xsscanner not found at {xsscanner_dir}. Skipping XSS scan.")
@@ -194,7 +217,7 @@ def run_xsscanner(subdomains, cookie, gemini_api_key):
 
 def run_backupfinder(subdomains):
     print(f"\n[*] Running BackupFinder on {len(subdomains)} active subdomains...")
-    bf_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cloned_repos", "BackupFinder"))
+    bf_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "BackupFinder"))
     bf_bin = "backupfinder" if os.name != 'nt' else "backupfinder.exe"
     
     if not os.path.exists(os.path.join(bf_dir, bf_bin)):
@@ -231,13 +254,17 @@ def run_backupfinder(subdomains):
     except Exception as e:
         print(f"[!] Error running BackupFinder: {e}")
 
-def run_ds_store_exp(subdomains):
+def run_ds_store_exp(subdomains, cookie=None):
     print(f"\n[*] Running ds_store_exp on {len(subdomains)} active subdomains...")
-    ds_store_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cloned_repos", "ds_store_exp"))
+    ds_store_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "ds_store_exp"))
     
     if not os.path.exists(os.path.join(ds_store_dir, "ds_store_exp.py")):
         print(f"[!] Warning: ds_store_exp not found at {ds_store_dir}. Skipping ds_store checks.")
         return
+
+    env = os.environ.copy()
+    if cookie:
+        env["DS_STORE_COOKIE"] = cookie
 
     for url in subdomains:
         # ds_store_exp checks for /.DS_Store appended
@@ -247,13 +274,13 @@ def run_ds_store_exp(subdomains):
         cmd = ["python", "ds_store_exp.py", ds_url]
         
         try:
-            subprocess.run(cmd, cwd=ds_store_dir)
+            subprocess.run(cmd, cwd=ds_store_dir, env=env)
         except Exception as e:
             print(f"[!] Error running ds_store_exp on {ds_url}: {e}")
 
 def run_claude_bug_bounty(target, cookie, deepseek_key):
     print(f"\n[*] Starting claude-bug-bounty analysis on {target}...")
-    cbb_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cloned_repos", "claude-bug-bounty"))
+    cbb_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "claude-bug-bounty"))
     if not os.path.exists(cbb_dir):
         print(f"[!] claude-bug-bounty not found at {cbb_dir}")
         return
@@ -359,7 +386,7 @@ def main():
     run_backupfinder(subdomains)
     print("\n[*] BackupFinder scans completed!")
     
-    run_ds_store_exp(subdomains)
+    run_ds_store_exp(subdomains, args.cookie)
     print("\n[*] .DS_Store scans completed!")
     
     run_claude_bug_bounty(target, args.cookie, args.deepseek_api_key)

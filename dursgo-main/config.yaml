@@ -22,29 +22,13 @@ user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML
 # AI (LLM) Integration Settings
 ai:
   enabled: false
-  provider: "gemini" # Supported: "gemini", "openai", "groq", "openrouter", "anthropic", "deepseek"
-  api_key: "GEMINI_API_KEY"
-  model: "gemini-2.5-pro"
+  provider: "deepseek" # Supported: "gemini", "groq"
+  api_key: "sk-test"
+  model: "deepseek-chat"
   # --- Other Provider Examples ---
-  # provider: "openai"
-  # api_key: "OPENAI_API_KEY"
-  # model: "gpt-4o"                        # e.g. gpt-4o, gpt-4o-mini, gpt-4-turbo
-  #
   # provider: "groq"
   # api_key: "GROQ_API_KEY"
   # model: "meta-llama/llama-4-scout-17b-16e-instruct"
-  #
-  # provider: "openrouter"
-  # api_key: "OPENROUTER_API_KEY"
-  # model: "anthropic/claude-3.5-sonnet"   # or any model slug from openrouter.ai/models
-  #
-  # provider: "anthropic"
-  # api_key: "ANTHROPIC_API_KEY"
-  # model: "claude-opus-4-5"               # e.g. claude-opus-4-5, claude-3-5-haiku-latest
-  #
-  # provider: "deepseek"
-  # api_key: "DEEPSEEK_API_KEY"
-  # model: "deepseek-chat"
 
 # Output settings
 output:
@@ -89,11 +73,11 @@ authentication:
 # ------------------------------------------------------------
 #
 #  # Paste the full cookie string here
-#  cookie: "session=a1b2c3d4e5f6; user_id=123; role=admin"
-#  cookie: "session=.eJwlzjtqBTEMheG9uE5hSR7Jns0MkiyREEhgHlXI3q_hlucvDt9fOfKM67Ps9_nERzm-ZtkLEJkls0tgB5qGYk6QI2tXIhzkQDFc1UAh2kh13aSOAPXB0twQKXKqRK2mMqHj1njS6tyCPXSsGzCtWZGm9DQwSFq3ClIW5LnifGtwTb_OPO7f7_hZwTqBbNm2Hm0pyJGQQzjbcipnhDSlnOX_BVFxQEc.aKCXsA.k0lahMyOZtNHoxR3jA5nr3Bm0fQ"  
-  cookie: "session=yESqIFVN7ARtUbeM2tCws9FPEXDlhA9j"
-#  cookie: "XSRF-TOKEN=eyJpdiI6InBzOStndm9VQVNLUTJ4TmNZRnY3cEE9PSIsInZhbHVlIjoib1Z2YlBnaWUwSDcrNHIwcmUvbnFtUzVhWFAxeFp1VFJweFRlUkszNnQvYXk5NmJEZ3U3TWJ0YmNMbS82RUJOOVVXVUJPZW5qREQzcXFlbzlnZGtkYW9xNmtlK1p6anZNc0JUUG5qRFMxbGhIVEI3bGFDL0RBNlBVMUtMcDNHZUIiLCJtYWMiOiJiMzZmMThhMjY3NmE3Y2I0MDJmNTk3MDFiY2ViMGI5YzhlNDczZjgzN2ZlZDk3N2U5ZjQ1OTg0MTM4MWJiNWRjIiwidGFnIjoiIn0%3D; dursgo_session=eyJpdiI6IkxtVGZKTWdkRzNhVFl1blpoZS8rb0E9PSIsInZhbHVlIjoiQXU2Z3BUOXI5TDJxdE1kbEJ2UTRmQ2Nod1dsK0EyZzVSTy8rVTFRSVpNL3NBY2ttblpXbnZGMmVkQ2FkYTVXZnFWcHl4VytIczVZTkdxenBrQ0tzeDYxcUdpem13clNXNGlOSSs3TUY2aHpadmF4SkR3elQ5Q1hOSnEzN0NOSDMiLCJtYWMiOiJmMWMyMWZiYmY4YmRkMGJkMGQ1NTJjY2I1ODhiYjYwNzMwYWFhMTZlMTMzMTRkNGJmOGFjZjI4YmEzNmRkZDM0IiwidGFnIjoiIn0%3D; _dursgoid=eeTF1cCUs06DZjwmx7V4Gq9K6Odej.37wiaptQS2x6s-1755228049494-0.0.1.1-604800000; __cf_bm=yqE7JMH6t6MlJFfg5Y2cTm1_EbOZFlnyEFgiPKwCoCU-1755229979-1.0.1.1-3Ir4yKuPZMI_DXU6zdOaRTY1QvROrdBux.iYFoQdzFC0RSihfemXKsrmD2A68nAAGsDceUp5sjdDG2qfkenlwTlO8g24S.EYQ.Cc8D.RJbI" 
-#  cookie: "PHPSESSID=e4umgl18a9vc83g4n4j9hj6fdn"
+  cookie: "session=test"
+  cookie: "session=test"  
+  cookie: "session=test"
+  cookie: "session=test" 
+  cookie: "session=test"
 
 # --- OPTION 3: Header-Based Authentication (Static) ---
 # Use for API Keys or JWT (Bearer) tokens.

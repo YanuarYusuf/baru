@@ -121,7 +121,7 @@ This repository also includes video walkthroughs for each vulnerable lab, demons
 - **Accurate Finding Deduplication:** Presents clean, unique findings by normalizing and deduplicating results.
 - **OAST (Out-of-Band) Integration:** Detects blind vulnerabilities through out-of-band verification.
 - **CISA KEV Enrichment:** Enriches findings with context from the CISA Known Exploited Vulnerabilities (KEV) catalog.
-- **AI-Powered Analysis:** Integrates with LLMs (Gemini, Groq,OpenAI,Openrouter,Anthropic,DeepSeek) to provide detailed analysis, root cause summaries, and specific code remediation advice for discovered vulnerabilities.
+- **AI-Powered Analysis:** Integrates with LLMs (Gemini, Groq) to provide detailed analysis, root cause summaries, and specific code remediation advice for discovered vulnerabilities.
 - **Flexible Configuration:** Highly customizable via both YAML configuration files and command-line flags.
 - **High-Performance Engine:** Lightweight and fast, leveraging the performance of Go.
 
@@ -221,7 +221,7 @@ To enrich findings with analysis from an LLM, use the `--enable-ai` flag. This r
 
 ```bash
 # Run an SSRF scan and get AI-powered analysis for any findings
-./dursgo -u http://example.com/ssrf-vuln -c 10 -r 3 -s ssrf --enable-ai -output-json report.json
+./dursgo -u http://example.com/ssrf-vuln c 10 -r 3 -s ssrf --enable-ai -output-json report.json
 ```
 
 ## Command-Line Options
@@ -240,7 +240,6 @@ To enrich findings with analysis from an LLM, use the `--enable-ai` flag. This r
 | `-output-json` | Path to save the report file in JSON format.        | `-output-json result.json` |
 | `-r`           | Maximum number of retries for failed requests.      | `-r 3`                     |
 | `-render-js`   | Enable JavaScript rendering for crawling SPAs.      | `-render-js`               |
-| `-insecure`    | Skip TLS Certificate Verification.                  | `-insecure`                |
 | `-update-kev`  | Force an update of the CISA KEV catalog and exit.   | `-update-kev`              |
 | `-v`           | Enable verbose output (DEBUG level).                | `-v`                       |
 | `-vv`          | Enable trace-level output (highly verbose).         | `-vv`                      |
@@ -268,7 +267,6 @@ DursGo provides a variety of scanner modules. Scans can be run with one or more 
 - `sqli` - Detects SQL Injection vulnerabilities.
 - `ssrf` - Detects in-band Server-Side Request Forgery (SSRF) vulnerabilities.
 - `ssti` - Detects Server-Side Template Injection (SSTI) vulnerabilities.
-- `subdomain` - A module to discover and validate active.
 - `xss` - Runs both XSS scanners: `xss-reflected` and `xss-stored`.
 - `xss-reflected` - Detects Reflected XSS vulnerabilities.
 - `xss-stored` - Detects Stored XSS vulnerabilities.
@@ -321,7 +319,7 @@ This section contains the core parameters for the scan.
 ### AI (LLM) Integration Settings
 This section configures the optional AI-powered analysis feature.
 - `enabled`: A boolean (`true`/`false`) to enable or disable AI analysis. Can be overridden by the `--enable-ai` flag.
-- `provider`: The LLM provider to use. Supported: `"gemini"`, `"groq"`, `"openai"`, `"openrouter"`, `"anthropic"`, `"deepseek"`.
+- `provider`: The LLM provider to use. Supported: `"gemini"`, `"groq"`, `"openai"`.
 - `api_key`: Your API key for the selected provider.
 - `model`: The specific model name to use (e.g., `"gemini-2.0-flash"`, `"meta-llama/llama-4-scout-17b-16e-instruct"`).
 
@@ -458,14 +456,14 @@ This document outlines the future development plans for the DursGo security scan
 The following are potential areas for future development to make DursGo a more comprehensive and leading-edge scanner.
 
 #### a. LLM & AI Integration Enhancements
-- **Current Support:** Dursgo currently supports AI-powered vulnerability analysis using **Gemini**, **Groq**,**OpenAI**,**Openrouter** and **Anthropic**
-- **Future Support:** Future development will focus on adding direct support for more providers like local models via **Ollama**.
+- **Current Support:** Dursgo currently supports AI-powered vulnerability analysis using **Gemini** and **Groq** (via an OpenAI-compatible API).
+- **Future Support:** Future development will focus on adding direct support for more providers like **OpenAI**, **Anthropic**, and local models via **Ollama**.
 - **AI-Powered Scanning:** A major planned feature is the "AI-Powered Payload Generation" scanner, which will use LLMs to dynamically create novel test payloads, moving beyond static payload lists.
 
 #### b. API Scanning Enhancements
 - **OpenAPI/Swagger Support:** Implement the ability to parse OpenAPI (v2/v3) and Swagger specifications. This would allow DursGo to automatically discover all API endpoints, parameters, and expected data types, enabling much more comprehensive and targeted API security testing beyond what the crawler can find.
 
-#### b. Enhancements to Existing Scanner Modules
+#### c. Enhancements to Existing Scanner Modules
 
 - **Continuous Improvement:** All existing scanner modules will be continuously updated with the latest detection logic and payloads to keep pace with evolving security threats and research.
 - **IDOR Scanner:**
@@ -478,7 +476,7 @@ The following are potential areas for future development to make DursGo a more c
   - Improve DOM XSS detection with deeper analysis that does not always require a headless browser.
   - Add detection for XSS in more complex contexts, such as inside JavaScript attributes (`onmouseover`, etc.).
 
-#### c. New Scanner Modules
+#### d. New Scanner Modules
 
 - **JWT Attacks:** A module to test for common JSON Web Token vulnerabilities, such as weak secrets, algorithm confusion (`none` algorithm), and signature stripping.
 - **OAuth Authentication:** A scanner to detect misconfigurations in OAuth 2.0 flows, such as improper handling of redirect URIs.
@@ -490,17 +488,17 @@ The following are potential areas for future development to make DursGo a more c
 - **Prototype Pollution:** A dedicated scanner for Node.js applications to detect prototype pollution vulnerabilities.
 - **Secret Scanning:** Add a module that can search for hardcoded secrets (API keys, passwords) within JavaScript files or JSON responses.
 
-#### d. Reporting & Output Improvements
+#### e. Reporting & Output Improvements
 
 - **New Report Formats:** Add options to export results in an interactive HTML format or CSV for easier data analysis.
 - **Vulnerability Evidence:** Include more detailed response snippets in reports to facilitate manual validation.
 
-#### e. Configuration and Flexibility Enhancements
+#### f. Configuration and Flexibility Enhancements
 
 - **Scope & Exclusions:** Add options in `config.yaml` to exclude specific paths or parameters from scanning (e.g., logout buttons, password change forms).
 - **Throttling & Rate Limiting:** More granular control over request delays to avoid being blocked by WAF/IPS.
 
-#### f. Integration and Automation
+#### g. Integration and Automation
 
 - **Baseline Scans:** Add a feature to run an initial scan and then only report new vulnerabilities on subsequent scans, which is highly useful for CI/CD integration.
 - **API Documentation:** If DursGo is developed as a service, provide API documentation for integration with other tools.
