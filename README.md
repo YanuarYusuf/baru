@@ -54,7 +54,7 @@ python lazy_dursgo.py -t <target.com> --cookie "session_id=cookie_anda_disini" -
 | Argumen | Deskripsi | Default |
 | :--- | :--- | :--- |
 | `-t`, `--target` | Target domain (contoh: example.com) | **Wajib** |
-| `--scan-type` | Tipe pemindaian LazyHunter: `-lts` (Ringan/Light), `-dks` (Sedang/Dark), `-dps` (Mendalam/Deep) | `-lts` |
+| `--scan-type` | Tipe pemindaian LazyHunter: `lts` (Ringan/Light), `dks` (Sedang/Dark), `dps` (Mendalam/Deep) | `lts` |
 | `--speed` | Kecepatan pemindaian LazyHunter: `low`, `standard`, `fast` | `fast` |
 | `--cookie` | Cookie yang digunakan untuk melakukan pemindaian terautentikasi pada seluruh rantai alat | `None` |
 | `--deepseek-api-key` | API Key DeepSeek untuk analisis AI di DursGo & Claude Bug Bounty | `None` |
@@ -66,7 +66,7 @@ python lazy_dursgo.py -t <target.com> --cookie "session_id=cookie_anda_disini" -
 Menjalankan pemindaian mendalam pada `example.com` dengan kecepatan standar (standard speed), menggunakan *cookies* untuk akses *endpoint* yang membutuhkan login, DeepSeek untuk Dursgo/CBB, dan Gemini untuk XSS Scanner:
 
 ```bash
-python lazy_dursgo.py -t example.com --scan-type -dps --speed standard --cookie "PHPSESSID=123456789" --deepseek-api-key "sk-abcdef123456789" --gemini-api-key "AIzaSy_123456789"
+python lazy_dursgo.py -t example.com --scan-type dps --speed standard --cookie "PHPSESSID=123456789" --deepseek-api-key "sk-abcdef123456789" --gemini-api-key "AIzaSy_123456789"
 ```
 
 ## ⚠️ Catatan Penting
