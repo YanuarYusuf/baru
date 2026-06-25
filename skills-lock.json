@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "penetration-testing": {
+      "source": "bagelhole/devops-security-agent-skills",
+      "sourceType": "github",
+      "skillPath": "security/operations/penetration-testing/SKILL.md",
+      "computedHash": "f17e64564e1b42be6583eadd49cfdfa17ec568798ccafcc11cde48ac8182bae9"
+    },
+    "performing-web-application-penetration-test": {
+      "source": "mukul975/anthropic-cybersecurity-skills",
+      "sourceType": "github",
+      "skillPath": "skills/performing-web-application-penetration-test/SKILL.md",
+      "computedHash": "b2229e25e04f74c310704fb006547dfe5ca507bde2ea46683243f435bad86690"
+    }
+  }
+}
