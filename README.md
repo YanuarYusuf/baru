@@ -14,9 +14,8 @@ Proyek ini menggabungkan lima alat bug bounty canggih—**LazyHunter**, **DursGo
 1. **LazyHunter (Reconnaissance)**: Mencari subdomain, memeriksa host yang aktif, dan melakukan *crawling* pada endpoint. Cookie Anda akan otomatis digunakan jika alat ini mendukung fitur tersebut di *background*.
 2. **DursGo (Vulnerability Scanner)**: Memindai kerentanan dengan cepat (berbasis Go) pada subdomain aktif yang telah ditemukan oleh LazyHunter. Otomatis menggunakan API Key DeepSeek dan Cookie Anda untuk *AI context* dan sesi terautentikasi.
 3. **XSS Scanner (Advanced XSS Testing)**: Memindai seluruh endpoint yang ditemukan menggunakan metode berbasis navigasi dinamis (Playwright) dan mencocokkan pola DOM XSS menggunakan kecerdasan dari Gemini API. (Otomatis menggunakan Cookie dan Gemini API Key Anda).
-4. **BackupFinder**: Mengecek dan menemukan keberadaan direktori serta file backup yang tertinggal pada subdomain aktif, mengompilasi polanya secara cermat untuk memastikan tidak ada arsip penting yang terlewat.
-5. **DS_Store Explorer**: Secara otomatis akan memeriksa seluruh *endpoint* aktif untuk mencari tereksposnya file `.DS_Store` dan akan mengekstrak struktur folder sensitif jika direkitori tersebut rentan.
-6. **Claude Bug Bounty (AI Agent)**: Menggunakan kecerdasan model DeepSeek untuk membuat *ReAct Agent* yang mencari celah lebih jauh dengan meneliti teknologi yang ada serta menganalisa dan merangkum temuan dari alat-alat sebelumnya.
+4. **DS_Store Explorer**: Secara otomatis akan memeriksa seluruh *endpoint* aktif untuk mencari tereksposnya file `.DS_Store` dan akan mengekstrak struktur folder sensitif jika direkitori tersebut rentan.
+5. **Claude Bug Bounty (AI Agent)**: Menggunakan kecerdasan model DeepSeek untuk membuat *ReAct Agent* yang mencari celah lebih jauh dengan meneliti teknologi yang ada serta menganalisa dan merangkum temuan dari alat-alat sebelumnya.
 
 ## 📋 Prasyarat
 
@@ -34,7 +33,6 @@ Struktur direktori Anda seharusnya terlihat seperti ini:
 ├── lazyhunter-main/
 ├── dursgo-main/
 └── cloned_repos/
-    ├── BackupFinder/
     ├── claude-bug-bounty/
     ├── ds_store_exp/
     ├── nuclei-templates/

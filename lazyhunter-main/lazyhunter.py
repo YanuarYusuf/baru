@@ -87,35 +87,35 @@ def tampilkan_menu():
         pilihan = input("Choose Feature (0-8, 99, or 999): ").strip()
         if pilihan in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "99", "999"]:
             return pilihan
-        print("[❌] Pilihan tidak valid. Masukkan angka 0-8, 99, atau 999")
+        print("[X] Pilihan tidak valid. Masukkan angka 0-8, 99, atau 999")
 def get_target_input():
     """Meminta input URL target langsung dari pengguna."""
     while True:
         target = input("Masukkan URL target (contoh: example.com): ").strip()
         if target:
             return target
-        print("[❌] URL tidak valid! Masukkan URL yang benar.")
+        print("[X] URL tidak valid! Masukkan URL yang benar.")
 def fitur_info():
     info = r"""
 === INFORMASI FITUR ===
 
 1. Light Scan (Pemindaian Cepat)
-   - Subfinder → mencari subdomain dari target domain.
-   - Httpx → memfilter subdomain aktif (respon HTTP).
-   - Nuclei → scanning subdomain aktif menggunakan template umum seperti:
+   - Subfinder -> mencari subdomain dari target domain.
+   - Httpx -> memfilter subdomain aktif (respon HTTP).
+   - Nuclei -> scanning subdomain aktif menggunakan template umum seperti:
      misconfiguration, exposure, default-login, panel, cves, cms, files, dns, ssl, token, backup, dll.
    - Kecepatan scan dapat disesuaikan (low/standard/fast).
    - Hasil scan dikirim otomatis ke Telegram.
 
 2. Deep Scan (Pemindaian Mendalam)
-   - Subfinder + Assetfinder → mencari sebanyak mungkin subdomain dari target.
+   - Subfinder + Assetfinder -> mencari sebanyak mungkin subdomain dari target.
    - Gabungkan dan hilangkan duplikat hasil.
-   - Httpx → validasi subdomain aktif.
-   - Nuclei tahap 1 → scan awal menggunakan template umum seperti:
+   - Httpx -> validasi subdomain aktif.
+   - Nuclei tahap 1 -> scan awal menggunakan template umum seperti:
      misconfiguration, exposure, default-login, panel, cves, cms, files, dns, ssl, token, backup, dll.
-   - Katana → crawling URL untuk mencari parameter dari subdomain aktif.
-   - Grep → filter URL yang memiliki parameter (?key=value).
-   - Nuclei tahap 2 → scan url hasil crawling untuk deteksi kerentanan seperti xss, sqli, lfi, dll.
+   - Katana -> crawling URL untuk mencari parameter dari subdomain aktif.
+   - Grep -> filter URL yang memiliki parameter (?key=value).
+   - Nuclei tahap 2 -> scan url hasil crawling untuk deteksi kerentanan seperti xss, sqli, lfi, dll.
    - Kecepatan scan dapat disesuaikan (low/standard/fast).
    - Semua hasil dikirim otomatis ke Telegram.
 
@@ -133,8 +133,8 @@ def fitur_info():
 
 6. Subdomain Takeover Checker
    - Memiliki dua mode:
-     • Massal → dari file list subdomain.
-     • Wildcard → auto subdomain dengan subfinder.
+     - Massal -> dari file list subdomain.
+     - Wildcard -> auto subdomain dengan subfinder.
    - Menggunakan Nuclei dengan template `takeovers` untuk memeriksa kemungkinan takeover.
    - Hasil scan dikirim ke Telegram.
 
@@ -173,7 +173,7 @@ Instruksi:
 - Di bagian *Detail Pelapor*, cukup tuliskan:
   Nama: [nama]
   Email: [email]
-- Jangan menambahkan kalimat tambahan seperti “laporan ini disusun dengan tujuan...” atau "saya bersedia memberikan informasi tambahan bla bla bla bla ...." intinya saja
+- Jangan menambahkan kalimat tambahan seperti "laporan ini disusun dengan tujuan..." atau "saya bersedia memberikan informasi tambahan bla bla bla bla ...." intinya saja
 - Gunakan gaya bahasa profesional dan formal sesuai standar bug hunter report. Ringkas, jelas, dan langsung ke inti masalah. Format laporan dalam bentuk teks biasa, tidak ada markdown, tanpa tanggal.
 
 Tulis laporan berdasarkan input di atas.
@@ -202,8 +202,8 @@ def buat_laporan_dan_kirim_email():
         path_file = os.path.join(OUTPUT_FOLDER_REPORT, f"{nama_file}.txt")
         with open(path_file, "w", encoding="utf-8") as f:
             f.write(pesan_ai)
-        print(f"\n[💾] Laporan disimpan: {path_file}")
-        print("[📤] Mengirim email...")
+        print(f"\n[Save] Laporan disimpan: {path_file}")
+        print("[Send] Mengirim email...")
         try:
             subject = f"[Laporan Keamanan] - {vuln}"
             msg = MIMEMultipart()
@@ -214,12 +214,12 @@ def buat_laporan_dan_kirim_email():
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                 server.login(EMAIL_PENGIRIM, EMAIL_PASSWORD)
                 server.sendmail(EMAIL_PENGIRIM, email_tujuan, msg.as_string())
-            print("[✅] Laporan berhasil dikirim ke email.")
+            print("[V] Laporan berhasil dikirim ke email.")
         except Exception as e:
-            print("[❌] Gagal mengirim email.")
+            print("[X] Gagal mengirim email.")
             print("Error:", str(e))
     else:
-        print("[❌] Gagal memproses OpenRouter API.")
+        print("[X] Gagal memproses OpenRouter API.")
         print("Kode:", response.status_code)
         print(response.text)
 def buat_laporan_kerentanan():
@@ -245,11 +245,11 @@ def buat_laporan_kerentanan():
         path_file = os.path.join(OUTPUT_FOLDER_REPORT, f"{nama_file}.txt")
         with open(path_file, "w", encoding="utf-8") as f:
             f.write(pesan_ai)
-        print(f"\n[💾] Laporan berhasil disimpan di: {path_file}")
-        print("\n[📤] Mengirim ke Telegram...")
+        print(f"\n[Save] Laporan berhasil disimpan di: {path_file}")
+        print("\n[Send] Mengirim ke Telegram...")
         kirim_laporan_telegram_teks_report(path_file)
     else:
-        print("[❌] Gagal memproses dengan OpenRouter API.")
+        print("[X] Gagal memproses dengan OpenRouter API.")
         print("Kode:", response.status_code)
         print(response.text)
 def takeover():
@@ -264,16 +264,16 @@ def takeover():
         elif sub_mode == "3":
             return
         else:
-            print("[❌] Pilihan tidak valid.")
+            print("[X] Pilihan tidak valid.")
 def cek_takeover(mode):
     if mode == "1":
         nama_file = input("Masukkan nama file yang berisi daftar domain/subdomain (contoh: subdomain.txt): ").strip()
         if not os.path.isfile(nama_file):
-            print("[❌] File tidak ditemukan.")
+            print("[X] File tidak ditemukan.")
             return
         output_nama = input("Masukkan nama output file (tanpa .txt): ").strip()
         if not output_nama:
-            print("[❌] Nama file output tidak boleh kosong.")
+            print("[X] Nama file output tidak boleh kosong.")
             return
         input_file = nama_file
         output_path = os.path.join(OUTPUT_FOLDER_TAKEOVER, f"TO_{output_nama}.txt")
@@ -288,11 +288,11 @@ def cek_takeover(mode):
     try:
         subprocess.run([
             "nuclei", "-l", input_file, "-nh", "-t", "takeovers", "-o", output_path
-        ], check=True)
+        ], check=True, shell=False)
         kirim_laporan_telegram(output_path, label)
-        print(f"[✅] Scan selesai. Hasil di: {output_path}")
+        print(f"[V] Scan selesai. Hasil di: {output_path}")
     except subprocess.CalledProcessError:
-        print(f"[❌] Gagal menjalankan nuclei takeover scan untuk: {input_file}")
+        print(f"[X] Gagal menjalankan nuclei takeover scan untuk: {input_file}")
 USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
     'Mozilla/5.0 (X11; Linux x86_64)',
@@ -360,7 +360,7 @@ def google_dork_search(target, output_file):
         dork = dork_template.format(target=target)
         headers = {"User-Agent": random.choice(USER_AGENTS)}
         url = f"https://html.duckduckgo.com/html?q={dork}"
-        print(f"[⚙️] Mencari: {dork}")
+        print(f"[*] Mencari: {dork}")
         try:
             response = requests.get(url, headers=headers, timeout=10)
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -368,23 +368,23 @@ def google_dork_search(target, output_file):
                 link = result.get('href')
                 if link:
                   bersih = bersihkan_link(link)
-                  print(f"[✅] {bersih}")
+                  print(f"[V] {bersih}")
                   hasil.append(bersih)
             time.sleep(random.uniform(2, 4))
         except Exception as e:
-            print(f"[❌] Error saat mencari dork '{dork}': {e}")
+            print(f"[X] Error saat mencari dork '{dork}': {e}")
     with open(output_file, "w") as f:
         for url in hasil:
             f.write(url + "\n")
-    print(f"[📁] Hasil dork disimpan di: {output_file}")
+    print(f"[Dir] Hasil dork disimpan di: {output_file}")
 def manual_dorking(output_file):
     dork = input("Masukkan dork manual: ").strip()
     if not dork:
-        print("[❌] Dork tidak boleh kosong.")
+        print("[X] Dork tidak boleh kosong.")
         return
     headers = {"User-Agent": random.choice(USER_AGENTS)}
     url = f"https://html.duckduckgo.com/html?q={dork}"
-    print(f"[🔍] Mencari: {dork}")
+    print(f"[Search] Mencari: {dork}")
     hasil = []
     try:
         response = requests.get(url, headers=headers, timeout=10)
@@ -393,15 +393,15 @@ def manual_dorking(output_file):
             link = result.get('href')
             if link:
               bersih = bersihkan_link(link)
-              print(f"[✅] {bersih}")
+              print(f"[V] {bersih}")
               hasil.append(bersih)
         time.sleep(random.uniform(2, 4))
     except Exception as e:
-        print(f"[❌] Gagal mencari: {e}")
+        print(f"[X] Gagal mencari: {e}")
     with open(output_file, "w") as f:
         for url in hasil:
             f.write(url + "\n")
-    print(f"[📁] Hasil disimpan di: {output_file}")
+    print(f"[Dir] Hasil disimpan di: {output_file}")
 def find_sensitive_data():
       target = get_target_input()
       output_file = os.path.join(OUTPUT_FOLDER_SENSITIVE_DATA, f"sensitivedata_{target}.txt")
@@ -409,7 +409,7 @@ def find_sensitive_data():
 def dorking_manual():
       nama_file = input("Masukkan nama file untuk menyimpan hasil (contoh: hasil_dork.txt): ").strip()
       if not nama_file:
-          print("[❌] Nama file tidak boleh kosong.")
+          print("[X] Nama file tidak boleh kosong.")
       else:
           output_file = os.path.join(OUTPUT_FOLDER_DORKING, nama_file)
           manual_dorking(output_file)
@@ -422,7 +422,7 @@ def tanya_kecepatan_scan():
     elif pilihan == "3":
         return ["-c", "40", "--max-host-error", "50"]
     else:
-        print("[❌] Pilihan tidak valid. Default ke Standar.")
+        print("[X] Pilihan tidak valid. Default ke Standar.")
         return ["-c", "25", "--max-host-error", "30"]
 def finding_subdomain(target, subdomain_file):
     print(f"\n\033[94m[+] Mencari subdomain dengan Subfinder dan Assetfinder untuk: {target}\033[0m")
@@ -432,12 +432,11 @@ def finding_subdomain(target, subdomain_file):
             process_subfinder = subprocess.Popen(
                 ["subfinder", "-silent", "-all", "-d", target],
                 stdout=f,
-                stderr=subprocess.DEVNULL
+                stderr=subprocess.DEVNULL, shell=False
             )
             process_subfinder.wait()
         if process_subfinder.returncode != 0:
-            print(f"[!] Gagal menjalankan Subfinder untuk target {target}")
-            return
+            print(f"[!] Peringatan: Subfinder memberikan exit code {process_subfinder.returncode}")
     except Exception as e:
         print(f"[!] Error saat menjalankan Subfinder: {e}")
         return
@@ -448,12 +447,11 @@ def finding_subdomain(target, subdomain_file):
             process_assetfinder = subprocess.Popen(
                 ["assetfinder", "--subs-only", target],
                 stdout=f,
-                stderr=subprocess.DEVNULL
+                stderr=subprocess.DEVNULL, shell=False
             )
             process_assetfinder.wait()
         if process_assetfinder.returncode != 0:
-            print(f"[!] Gagal menjalankan Assetfinder untuk target {target}")
-            return
+            print(f"[!] Peringatan: Assetfinder memberikan exit code {process_assetfinder.returncode}")
     except Exception as e:
         print(f"[!] Error saat menjalankan Assetfinder: {e}")
         return
@@ -463,40 +461,66 @@ def finding_subdomain(target, subdomain_file):
             all_subs.update(line.strip() for line in f if line.strip())
     with open(subdomain_file, "w") as f:
         f.write("\n".join(sorted(all_subs)))
-    print(f"\033[94m[✓] Subdomain hasil digabung dan disimpan di: {subdomain_file}\033[0m")
-    print(f"\033[94m[✓] Ditemukan total \033[92m{len(all_subs)}\033[94m Subdomain\033[0m")
+    print(f"\033[94m[V] Subdomain hasil digabung dan disimpan di: {subdomain_file}\033[0m")
+    print(f"\033[94m[V] Ditemukan total \033[92m{len(all_subs)}\033[94m Subdomain\033[0m")
 def active_check(active_file, subdomain_file, url):
         print(f"\033[94m[+] Mengecek {url} yang aktif...\033[0m")
         try:
+            with open(subdomain_file, "r") as f:
+                subdomains = [line.strip() for line in f if line.strip()]
+            
+            aktif_list = []
+            import urllib.request
+            import concurrent.futures
+            
+            def check_url(subdomain):
+                if not subdomain.startswith("http://") and not subdomain.startswith("https://"):
+                    target_url = "http://" + subdomain
+                else:
+                    target_url = subdomain
+                try:
+                    req = urllib.request.Request(target_url, headers={'User-Agent': 'Mozilla/5.0'})
+                    with urllib.request.urlopen(req, timeout=5) as response:
+                        if response.status == 200:
+                            return target_url
+                except Exception:
+                    try:
+                        if not subdomain.startswith("http://") and not subdomain.startswith("https://"):
+                            target_url = "https://" + subdomain
+                            req = urllib.request.Request(target_url, headers={'User-Agent': 'Mozilla/5.0'})
+                            with urllib.request.urlopen(req, timeout=5) as response:
+                                if response.status == 200:
+                                    return target_url
+                    except Exception:
+                        pass
+                return None
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+                results = executor.map(check_url, subdomains)
+                for res in results:
+                    if res:
+                        aktif_list.append(res)
+            
             with open(active_file, "w") as f:
-                process = subprocess.Popen(
-                    ["httpx", "-silent", "-mc", "200", "-t", "200", "-l", subdomain_file],
-                    stdout=f,
-                    stderr=subprocess.DEVNULL
-                )
-                process.wait()
-            if process.returncode != 0:
-                print(f"[!] Gagal menjalankan httpx")
-                return
+                f.write("\n".join(aktif_list))
+                
+            aktif = len(aktif_list)
         except Exception as e:
-            print(f"[!] Error httpx: {e}")
+            print(f"[!] Error pengecekan aktif: {e}")
             return
-        with open(active_file) as f:
-            aktif = len(f.readlines())
-        print(f"\033[94m[✓] Ditemukan \033[92m{aktif}\033[94m {url} aktif\033[0m")
+        print(f"\033[94m[V] Ditemukan \033[92m{aktif}\033[94m {url} aktif\033[0m")
 def crawling_katana(katana_output, active_file):
         print("\033[94m[+] Memulai proses crawling dengan Katana...\033[0m")
         try:
             with open(katana_output, "w") as f:
                 process = subprocess.Popen(
-                    ["katana", "-list", active_file, "-jc", "-d", "4", "-fs", "fqdn", "-f", "qurl"],
+                    [r"C:\Users\Faikal\go\bin\katana.exe", "-list", active_file, "-jc", "-d", "4", "-fs", "fqdn", "-f", "qurl"],
                     stdout=f,
-                    stderr=subprocess.DEVNULL
+                    stderr=subprocess.DEVNULL, shell=False
                 )
                 process.wait()
             if process.returncode != 0:
-                print(f"[!] Gagal menjalankan katana")
-                return
+                print(f"[!] Peringatan: katana memberikan exit code {process.returncode}")
         except Exception as e:
             print(f"[!] Error katana: {e}")
             return
@@ -510,11 +534,10 @@ def crawling_gau(gau_output, target):
                     "--threads", "20",
                     "--blacklist", "png,jpg,jpeg,gif,css,svg,woff,woff2,ttf,eot,otf,ico,txt,json",
                     "--verbose"
-                ], stdout=outfile, stderr=subprocess.DEVNULL)
+                ], stdout=outfile, stderr=subprocess.DEVNULL, shell=False)
                 process.wait()
             if process.returncode != 0:
-                print(f"[!] Gagal menjalankan gau")
-                return
+                print(f"[!] Peringatan: gau memberikan exit code {process.returncode}")
         except Exception as e:
             print(f"[!] Error gau: {e}")
             return
@@ -523,7 +546,7 @@ def nuclei_without_parameter(target, input_file, output_file, user_agent, scan_a
     try:
         subprocess.run([
             "nuclei", "-l", input_file, "-s", "low,medium,high,critical", "-tags", "misconfiguration,exposure,default-login,panel,cves,tech,cms,files,dns,takeover,ssl,token,fuzz,backup,git,iot,xss", "-ept", "ssl", "-H", f"User-Agent: {user_agent}", "-timeout", "5", "-retries", "1", *scan_args, "-o", output_file
-        ], check=True)
+        ], check=True, shell=False)
     except subprocess.CalledProcessError:
         print("[!] Gagal menjalankan Nuclei (HTTPX)")
         return
@@ -533,7 +556,7 @@ def nuclei_js_exposure(target, input_file, output_file, user_agent, scan_args):
     try:
         subprocess.run([
             "nuclei", "-l", input_file, "-tags", "exposure", "-timeout", "5", "-retries", "1", "-H", f"User-Agent: {user_agent}", *scan_args, "-o", output_file
-        ], check=True)
+        ], check=True, shell=False)
     except subprocess.CalledProcessError:
         print("[!] Gagal menjalankan Nuclei (JS Exposure)")
         return
@@ -543,7 +566,7 @@ def nuclei_param_dast(target, input_file, output_file, user_agent, scan_args):
     try:
         subprocess.run([
             "nuclei", "-l", input_file, "-dast", "-tags", "xss,sqli,ssrf,rce,lfi,rfi,redirect,crlf,idor,ssti,csrf,file-upload,path-traversal,debug,exposure,auth-bypass,fuzz,generic,web,token-leakage", "-fa", "high", "-s", "low,medium,high,critical", "-ept", "ssl", "-timeout", "5", "-retries", "1", "-H", f"User-Agent: {user_agent}", *scan_args, "-o", output_file
-        ], check=True)
+        ], check=True, shell=False)
     except subprocess.CalledProcessError:
         print("[!] Gagal menjalankan Nuclei (Parameter DAST)")
         return
@@ -553,13 +576,13 @@ def gabungkan_hasil_crawling(katana_output, gau_output, crawled_filtered_output,
     if os.path.exists(katana_output):
         with open(katana_output, "r") as f:
             katana_urls = [line.strip() for line in f if "http" in line]
-    print(f"\033[94m[✓] Berhasil crawling \033[92m{len(katana_urls)}\033[94m URL dengan Katana\033[0m")
+    print(f"\033[94m[V] Berhasil crawling \033[92m{len(katana_urls)}\033[94m URL dengan Katana\033[0m")
     crawling_gau(gau_output, target)
     gau_urls = []
     if os.path.exists(gau_output):
         with open(gau_output, "r") as f:
             gau_urls = [line.strip() for line in f if "http" in line]
-    print(f"\033[94m[✓] Berhasil crawling \033[92m{len(gau_urls)}\033[94m URL dengan Gau\033[0m")
+    print(f"\033[94m[V] Berhasil crawling \033[92m{len(gau_urls)}\033[94m URL dengan Gau\033[0m")
     
     print("\033[94m[+] Menggabungkan hasil crawling...\033[0m")
     all_urls = set()
@@ -588,8 +611,8 @@ def pisahkan_url(crawled_filtered_output, param_output, js_output):
     with open(js_output, "w") as f:
         for url in js_urls:
             f.write(url + "\n")
-    print(f"\033[94m[✓] Ditemukan \033[92m{len(param_urls)}\033[94m URL berparameter, disimpan di: {param_output}\033[0m")
-    print(f"\033[94m[✓] Ditemukan \033[92m{len(js_urls)}\033[94m URL .js, disimpan di: {js_output}\033[0m")
+    print(f"\033[94m[V] Ditemukan \033[92m{len(param_urls)}\033[94m URL berparameter, disimpan di: {param_output}\033[0m")
+    print(f"\033[94m[V] Ditemukan \033[92m{len(js_urls)}\033[94m URL .js, disimpan di: {js_output}\033[0m")
 def light_scan():
         target = get_target_input()
         scan_args = tanya_kecepatan_scan()
@@ -597,7 +620,7 @@ def light_scan():
         active_file = os.path.join(OUTPUT_FOLDER_ACTIVE, f"active_{target}.txt")
         nuclei_output_httpx = os.path.join(OUTPUT_FOLDER_NUCLEI, f"nuc_active_{target}.txt")
         user_agent = random.choice(USER_AGENTS)
-        print(f"\n[▶] Memulai proses untuk {target}")
+        print(f"\n[>] Memulai proses untuk {target}")
         waktu_mulai_url = time.time()
         finding_subdomain(target, subdomain_file)
         active_check(active_file, subdomain_file, "Subdomain")
@@ -607,8 +630,8 @@ def light_scan():
         durasi_scan = waktu_selesai_scan_nuclei - waktu_mulai_scan_nuclei
         jam, sisa = divmod(int(durasi_scan), 3600)
         menit, detik = divmod(sisa, 60)
-        print(f"[⏱️] Proses scanning Nuclei selesai dalam {jam} jam {menit} menit {detik} detik")
-        print(f"[✓] Semua proses selesai untuk target: {target}")
+        print(f"[Time] Proses scanning Nuclei selesai dalam {jam} jam {menit} menit {detik} detik")
+        print(f"[V] Semua proses selesai untuk target: {target}")
 def dark_deep(mode):
         target = get_target_input()
         scan_args = tanya_kecepatan_scan()
@@ -625,7 +648,7 @@ def dark_deep(mode):
         js_output = os.path.join(OUTPUT_FOLDER_GREP, f"js_{target}.txt")
         nuclei_output_js = os.path.join(OUTPUT_FOLDER_NUCLEI, f"nuc_exp_{target}.txt")
         nuclei_output_param = os.path.join(OUTPUT_FOLDER_NUCLEI, f"nuc_dast_{target}.txt")
-        print(f"\n[▶] Memulai proses untuk {target}")
+        print(f"\n[>] Memulai proses untuk {target}")
         waktu_mulai_url = time.time()
         finding_subdomain(target, subdomain_file)
         active_check(active_file, subdomain_file, "Subdomain")
@@ -638,7 +661,7 @@ def dark_deep(mode):
         durasi_url = waktu_selesai_url - waktu_mulai_url
         jam, sisa = divmod(int(durasi_url), 3600)
         menit, detik = divmod(sisa, 60)
-        print(f"[⏱️] Berhasil mengumpulkan URL dari {target} selama {jam} jam {menit} menit {detik} detik")
+        print(f"[Time] Berhasil mengumpulkan URL dari {target} selama {jam} jam {menit} menit {detik} detik")
         waktu_mulai_scan_nuclei = time.time()
         if mode == "dark":
             nuclei_js_exposure(target, js_output, nuclei_output_js, user_agent, scan_args)
@@ -648,15 +671,15 @@ def dark_deep(mode):
             nuclei_js_exposure(target, js_output, nuclei_output_js, user_agent, scan_args)
             nuclei_param_dast(target, param_output, nuclei_output_param, user_agent, scan_args)
             output_path_takeover = os.path.join(OUTPUT_FOLDER_TAKEOVER, f"TOW_{target}.txt")
-            print(f"[🚨] Menjalankan nuclei takeover scan untuk: {target}")
+            print(f"[Alert] Menjalankan nuclei takeover scan untuk: {target}")
             try:
                 subprocess.run([
                     "nuclei", "-l", subdomain_file, "-nh", "-t", "takeovers", "-o", output_path_takeover
-                ], check=True)
+                ], check=True, shell=False)
                 kirim_laporan_telegram(output_path_takeover, f"Takeover Wildcard ({target})")
-                print(f"[✓] Scan selesai. Hasil di: {output_path_takeover}")
+                print(f"[V] Scan selesai. Hasil di: {output_path_takeover}")
             except subprocess.CalledProcessError:
-                print(f"[❌] Gagal menjalankan nuclei takeover scan untuk {target}")
+                print(f"[X] Gagal menjalankan nuclei takeover scan untuk {target}")
         else:
             print(f"[!] Mode scan tidak dikenal: {mode}")
             return
@@ -664,20 +687,20 @@ def dark_deep(mode):
         durasi_scan = waktu_selesai_scan_nuclei - waktu_mulai_scan_nuclei
         jam, sisa = divmod(int(durasi_scan), 3600)
         menit, detik = divmod(sisa, 60)
-        print(f"[⏱️] Proses scanning Nuclei selesai dalam {jam} jam {menit} menit {detik} detik")
-        print(f"[✓] Semua proses selesai untuk target: {target}")
+        print(f"[Time] Proses scanning Nuclei selesai dalam {jam} jam {menit} menit {detik} detik")
+        print(f"[V] Semua proses selesai untuk target: {target}")
 def kirim_laporan_telegram(path_file, domain, max_len=4000):
     if not token_valid(BOT_TOKEN) or not chat_id_valid(CHAT_ID):
-        print("[ℹ️] Token bot atau chat_id tidak ditemukan / tidak valid. Melewati pengiriman Telegram.")
+        print("[Info] Token bot atau chat_id tidak ditemukan / tidak valid. Melewati pengiriman Telegram.")
         return
     if not os.path.exists(path_file):
-        print(f"[⚠️] File laporan {path_file} tidak ditemukan.")
+        print(f"[Warning] File laporan {path_file} tidak ditemukan.")
         return
     try:
         with open(path_file, "r") as file:
             lines = file.readlines()
         if not lines:
-            lines = [f"[❌] Tidak ada kerentanan ditemukan untuk {domain}.\n"]
+            lines = [f"[X] Tidak ada kerentanan ditemukan untuk {domain}.\n"]
         header = f"[Laporan untuk {domain}]\n\n"
         chunks = []
         current_chunk = header
@@ -696,35 +719,35 @@ def kirim_laporan_telegram(path_file, domain, max_len=4000):
                 'text': pesan
             })
             if response.status_code == 200:
-                print(f"[✓] Bagian {i+1} laporan {domain} berhasil dikirim.")
+                print(f"[V] Bagian {i+1} laporan {domain} berhasil dikirim.")
             else:
-                print(f"[❌] Gagal kirim bagian {i+1} laporan {domain}: {response.text}")
+                print(f"[X] Gagal kirim bagian {i+1} laporan {domain}: {response.text}")
                 break
     except Exception as e:
-        print(f"[⚠️] Terjadi kesalahan saat mengirim ke Telegram: {e}")
+        print(f"[Warning] Terjadi kesalahan saat mengirim ke Telegram: {e}")
 def kirim_laporan_telegram_teks_report(path_file):
     if not token_valid(BOT_TOKEN) or not chat_id_valid(CHAT_ID):
-        print("[ℹ️] Token bot atau chat_id tidak ditemukan / tidak valid. Melewati pengiriman Telegram.")
+        print("[Info] Token bot atau chat_id tidak ditemukan / tidak valid. Melewati pengiriman Telegram.")
         return
     if not os.path.exists(path_file):
-        print(f"[⚠️] File laporan {path_file} tidak ditemukan.")
+        print(f"[Warning] File laporan {path_file} tidak ditemukan.")
         return
     try:
         with open(path_file, "r") as file:
             isi = file.read()
         if not isi.strip():
-            isi = f"[ℹ️] Tidak ada teks laporan."
+            isi = f"[Info] Tidak ada teks laporan."
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         response = requests.post(url, data={
             'chat_id': CHAT_ID,
             'text': f"[Text Report]\n\n{isi}"
         })
         if response.status_code == 200:
-            print(f"[✓]  Teks laporan berhasil dikirim ke Telegram.")
+            print(f"[V]  Teks laporan berhasil dikirim ke Telegram.")
         else:
-            print(f"[❌] Gagal kirim laporan Telegram  {response.text}")
+            print(f"[X] Gagal kirim laporan Telegram  {response.text}")
     except Exception as e:
-        print(f"[⚠️] Terjadi kesalahan saat mengirim ke Telegram: {e}")
+        print(f"[Warning] Terjadi kesalahan saat mengirim ke Telegram: {e}")
 def fitur_update_tool():
     FILELIST_API_URL = f"https://api.github.com/repos/{GITHUB_USER}/{GITHUB_REPO}/contents/file_list.txt"
     VERSION_API_URL = f"https://api.github.com/repos/{GITHUB_USER}/{GITHUB_REPO}/contents/version.txt"
@@ -735,30 +758,30 @@ def fitur_update_tool():
         if r.status_code == 200:
             remote_version = base64.b64decode(r.json()['content']).decode().strip()
         else:
-            print("[❌] Gagal cek versi (status {})".format(r.status_code))
+            print("[X] Gagal cek versi (status {})".format(r.status_code))
             return
     except Exception as e:
-        print("[❌] Error saat cek versi:", e)
+        print("[X] Error saat cek versi:", e)
         return
     try:
-        print("[⚙️] Mengecek versi terbaru dari GitHub...")
+        print("[*] Mengecek versi terbaru dari GitHub...")
         if remote_version == LOCAL_VERSION:
-            print(f"[✓] Tool sudah versi terbaru: v{LOCAL_VERSION}")
+            print(f"[V] Tool sudah versi terbaru: v{LOCAL_VERSION}")
             return
-        print(f"[⬆️] Tersedia versi baru: v{remote_version}")
+        print(f"[Up] Tersedia versi baru: v{remote_version}")
         r = requests.get(FILELIST_API_URL, headers=headers, timeout=5)
         if r.status_code == 200:
             file_list_content = base64.b64decode(r.json()['content']).decode().strip()
             file_list = file_list_content.splitlines()
         else:
-            print(f"[❌] Gagal mengambil file_list.txt (status {r.status_code})")
+            print(f"[X] Gagal mengambil file_list.txt (status {r.status_code})")
             return
         if os.path.exists(TEMP_FOLDER):
             shutil.rmtree(TEMP_FOLDER)
         os.makedirs(TEMP_FOLDER, exist_ok=True)
         for file in file_list:
             url = f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/main/{file}"
-            print(f"[↓] Mengunduh: {file}")
+            print(f"[Down] Mengunduh: {file}")
             r = requests.get(url, headers=headers)
             if r.status_code == 200:
                 save_path = os.path.join(TEMP_FOLDER, file)
@@ -766,20 +789,20 @@ def fitur_update_tool():
                 with open(save_path, "w", encoding="utf-8") as f:
                     f.write(r.text)
             else:
-                print(f"[⚠️] Gagal mengunduh {file} (status {r.status_code})")
+                print(f"[Warning] Gagal mengunduh {file} (status {r.status_code})")
         for file in file_list:
             source = os.path.join(TEMP_FOLDER, file)
             destination = file
             if os.path.exists(source):
                 shutil.copy(source, destination)
-                print(f"[✔] Diperbarui: {file}")
+                print(f"[V] Diperbarui: {file}")
         shutil.rmtree(TEMP_FOLDER)
-        print(f"[✓] Update berhasil ke versi v{remote_version}")
-        print("[🔁] Merestart tool...")
+        print(f"[V] Update berhasil ke versi v{remote_version}")
+        print("[Restart] Merestart tool...")
         time.sleep(1)
         os.execv(sys.executable, ['python'] + sys.argv)
     except Exception as e:
-        print(f"[❌] Gagal melakukan update: {e}")
+        print(f"[X] Gagal melakukan update: {e}")
 if __name__ == "__main__":
     print_logo()
     while True:
@@ -803,7 +826,7 @@ if __name__ == "__main__":
         elif scan_type == "0":
             fitur_info()
         elif scan_type == "99":
-            print("[✔] Keluar dari LAZYHUNTER. Terima kasih!")
+            print("[V] Keluar dari LAZYHUNTER. Terima kasih!")
             break
         elif scan_type == "999": 
             fitur_update_tool()

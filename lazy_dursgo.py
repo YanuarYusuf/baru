@@ -56,9 +56,7 @@ def update_all_tools():
     ds_store_exp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "ds_store_exp")
     update_repo(ds_store_exp_dir, "https://github.com/YanuarYusuf/ds_store_exp.git", branch="master")
     
-    # BackupFinder
-    backupfinder_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "BackupFinder")
-    update_repo(backupfinder_dir, "https://github.com/YanuarYusuf/BackupFinder.git")
+
     
     # nuclei-templates
     nuclei_tpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "nuclei-templates")
@@ -126,8 +124,23 @@ def run_lazyhunter(domain, scan_type, speed, cookie=None):
     
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
+    
+    # Inject Go bin path for lazyhunter's subprocesses
+    go_bin = os.path.join(os.path.expanduser("~"), "go", "bin")
+    path_key = 'PATH'
+    for k in env.keys():
+        if k.upper() == 'PATH':
+            path_key = k
+            break
+            
+    if go_bin not in env.get(path_key, ""):
+        # Prepend to prioritize Go binaries over other conflicting scripts (e.g. httpx from Python)
+        env[path_key] = go_bin + os.pathsep + env.get(path_key, "")
+
     if cookie:
         env["LAZYHUNTER_COOKIE"] = cookie
+        
+    env["PYTHONUNBUFFERED"] = "1"
 
     try:
         speed_choice = "2"
@@ -136,12 +149,19 @@ def run_lazyhunter(domain, scan_type, speed, cookie=None):
         elif speed == "fast":
             speed_choice = "3"
             
+        # The target input function gets called multiple times or differently depending on scan_type
+        # In lazyhunter.py, the order of prompts is:
+        # 1. Feature Menu: e.g. "3" for Deep Scan
+        # 2. Target URL: e.g. "vulnweb.com"
+        # 3. Scanning speed: e.g. "2" for Standard
         input_data = f"{scan_choice}\n{domain}\n{speed_choice}\n99\n"
         process = subprocess.Popen(
             cmd, 
             cwd="lazyhunter-main", 
             env=env, 
             stdin=subprocess.PIPE,
+            stdout=sys.stdout,
+            stderr=sys.stderr,
             text=True,
             encoding='utf-8',
             errors='replace'
@@ -214,45 +234,6 @@ def run_xsscanner(subdomains, cookie, gemini_api_key):
             subprocess.run(cmd, cwd=xsscanner_dir)
         except Exception as e:
             print(f"[!] Error running XSS Scanner on {url}: {e}")
-
-def run_backupfinder(subdomains):
-    print(f"\n[*] Running BackupFinder on {len(subdomains)} active subdomains...")
-    bf_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".", "cloned_repos", "BackupFinder"))
-    bf_bin = "backupfinder" if os.name != 'nt' else "backupfinder.exe"
-    
-    if not os.path.exists(os.path.join(bf_dir, bf_bin)):
-        print(f"[*] Building BackupFinder...")
-        try:
-            subprocess.run(["go", "build", "-mod=mod", "-o", bf_bin, "./cmd/backupfinder"], cwd=bf_dir, check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"[!] Failed to build BackupFinder: {e}")
-            return
-
-    # Create a temporary target list file
-    target_list_path = os.path.join(bf_dir, "active_targets.txt")
-    try:
-        with open(target_list_path, "w") as f:
-            for url in subdomains:
-                f.write(url + "\n")
-    except Exception as e:
-        print(f"[!] Failed to write active targets for BackupFinder: {e}")
-        return
-
-    # Run BackupFinder
-    cmd = [
-        f"./{bf_bin}" if os.name != 'nt' else bf_bin,
-        "-l", "active_targets.txt",
-        "-w", # Wordlist mode (comprehensive patterns)
-        "--silent" # Output only results
-    ]
-    
-    print(f"[>] Generating potential backup paths for all active subdomains")
-    try:
-        # Run and capture output to know how many generated (optional)
-        subprocess.run(cmd, cwd=bf_dir)
-        print(f"[*] BackupFinder finished generating/checking permutations.")
-    except Exception as e:
-        print(f"[!] Error running BackupFinder: {e}")
 
 def run_ds_store_exp(subdomains, cookie=None):
     print(f"\n[*] Running ds_store_exp on {len(subdomains)} active subdomains...")
@@ -342,7 +323,19 @@ def main():
     parser.add_argument("--gemini-api-key", help="Gemini API key specifically for XSS Scanner AI analysis")
     parser.add_argument("--update", action="store_true", help="Update all tools from their respective GitHub repositories")
     
+    # Tool selection flags
+    parser.add_argument("--dursgo", action="store_true", help="Run DursGo scan")
+    parser.add_argument("--xss", action="store_true", help="Run XSS Scanner")
+    parser.add_argument("--dsstore", action="store_true", help="Run ds_store_exp")
+    parser.add_argument("--cbb", action="store_true", help="Run Claude Bug Bounty")
+    parser.add_argument("--all", action="store_true", help="Run all tools (default if no specific tool is selected)")
+    
     args = parser.parse_args()
+    
+    # Determine which tools to run
+    run_any_specific = args.dursgo or args.xss or args.dsstore or args.cbb
+    if not run_any_specific or args.all:
+        args.dursgo = args.xss = args.dsstore = args.cbb = True
     
     if args.update:
         update_all_tools()
@@ -377,19 +370,22 @@ def main():
         print(f"[!] No active subdomains found in {active_file_path}")
         sys.exit(0)
         
-    run_dursgo(subdomains)
-    print("\n[*] DursGo scans completed! Check dursgo-main/reports/ for JSON reports.")
+    if args.dursgo:
+        run_dursgo(subdomains)
+        print("\n[*] DursGo scans completed! Check dursgo-main/reports/ for JSON reports.")
     
-    run_xsscanner(subdomains, args.cookie, args.gemini_api_key)
-    print("\n[*] XSS scans completed!")
+    if args.xss:
+        run_xsscanner(subdomains, args.cookie, args.gemini_api_key)
+        print("\n[*] XSS scans completed!")
     
-    run_backupfinder(subdomains)
-    print("\n[*] BackupFinder scans completed!")
+
+    if args.dsstore:
+        run_ds_store_exp(subdomains, args.cookie)
+        print("\n[*] .DS_Store scans completed!")
     
-    run_ds_store_exp(subdomains, args.cookie)
-    print("\n[*] .DS_Store scans completed!")
-    
-    run_claude_bug_bounty(target, args.cookie, args.deepseek_api_key)
+    if args.cbb:
+        run_claude_bug_bounty(target, args.cookie, args.deepseek_api_key)
+        print("\n[*] Claude Bug Bounty analysis completed!")
 
 if __name__ == "__main__":
     main()
