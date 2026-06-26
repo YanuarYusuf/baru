@@ -287,7 +287,7 @@ def cek_takeover(mode):
     print(f"\033[94m[+] Menjalankan nuclei takeover scan untuk: {input_file}\033[0m")
     try:
         subprocess.run([
-            "nuclei", "-l", input_file, "-nh", "-t", "takeovers", "-o", output_path
+            "nuclei", "-l", input_file, "-nh", "-ni", "-t", "takeovers", "-o", output_path
         ], check=True, shell=False)
         kirim_laporan_telegram(output_path, label)
         print(f"[V] Scan selesai. Hasil di: {output_path}")
@@ -545,7 +545,7 @@ def nuclei_without_parameter(target, input_file, output_file, user_agent, scan_a
     print("\033[94m[+] Menjalankan Nuclei untuk Subdomain yang aktif (Without Parameter)...\033[0m")
     try:
         subprocess.run([
-            "nuclei", "-l", input_file, "-s", "low,medium,high,critical", "-tags", "misconfiguration,exposure,default-login,panel,cves,tech,cms,files,dns,takeover,ssl,token,fuzz,backup,git,iot,xss", "-ept", "ssl", "-H", f"User-Agent: {user_agent}", "-timeout", "5", "-retries", "1", *scan_args, "-o", output_file
+            "nuclei", "-l", input_file, "-s", "low,medium,high,critical", "-tags", "misconfiguration,exposure,default-login,panel,cves,tech,cms,files,dns,takeover,ssl,token,fuzz,backup,git,iot,xss", "-ept", "ssl", "-H", f"User-Agent: {user_agent}", "-timeout", "5", "-retries", "1", "-ni", *scan_args, "-o", output_file
         ], check=True, shell=False)
     except subprocess.CalledProcessError:
         print("[!] Gagal menjalankan Nuclei (HTTPX)")
@@ -555,7 +555,7 @@ def nuclei_js_exposure(target, input_file, output_file, user_agent, scan_args):
     print("\033[94m[+] Menjalankan Nuclei untuk URL .js (tag: exposure)...\033[0m")
     try:
         subprocess.run([
-            "nuclei", "-l", input_file, "-tags", "exposure", "-timeout", "5", "-retries", "1", "-H", f"User-Agent: {user_agent}", *scan_args, "-o", output_file
+            "nuclei", "-l", input_file, "-tags", "exposure", "-timeout", "5", "-retries", "1", "-H", f"User-Agent: {user_agent}", "-ni", *scan_args, "-o", output_file
         ], check=True, shell=False)
     except subprocess.CalledProcessError:
         print("[!] Gagal menjalankan Nuclei (JS Exposure)")
@@ -565,7 +565,7 @@ def nuclei_param_dast(target, input_file, output_file, user_agent, scan_args):
     print("\033[94m[+] Menjalankan Nuclei untuk URL berparameter (D-AST)...\033[0m")
     try:
         subprocess.run([
-            "nuclei", "-l", input_file, "-dast", "-tags", "xss,sqli,ssrf,rce,lfi,rfi,redirect,crlf,idor,ssti,csrf,file-upload,path-traversal,debug,exposure,auth-bypass,fuzz,generic,web,token-leakage", "-fa", "high", "-s", "low,medium,high,critical", "-ept", "ssl", "-timeout", "5", "-retries", "1", "-H", f"User-Agent: {user_agent}", *scan_args, "-o", output_file
+            "nuclei", "-l", input_file, "-dast", "-tags", "xss,sqli,ssrf,rce,lfi,rfi,redirect,crlf,idor,ssti,csrf,file-upload,path-traversal,debug,exposure,auth-bypass,fuzz,generic,web,token-leakage", "-fa", "high", "-s", "low,medium,high,critical", "-ept", "ssl", "-timeout", "5", "-retries", "1", "-H", f"User-Agent: {user_agent}", "-ni", *scan_args, "-o", output_file
         ], check=True, shell=False)
     except subprocess.CalledProcessError:
         print("[!] Gagal menjalankan Nuclei (Parameter DAST)")
@@ -674,7 +674,7 @@ def dark_deep(mode):
             print(f"[Alert] Menjalankan nuclei takeover scan untuk: {target}")
             try:
                 subprocess.run([
-                    "nuclei", "-l", subdomain_file, "-nh", "-t", "takeovers", "-o", output_path_takeover
+                    "nuclei", "-l", subdomain_file, "-nh", "-ni", "-t", "takeovers", "-o", output_path_takeover
                 ], check=True, shell=False)
                 kirim_laporan_telegram(output_path_takeover, f"Takeover Wildcard ({target})")
                 print(f"[V] Scan selesai. Hasil di: {output_path_takeover}")
